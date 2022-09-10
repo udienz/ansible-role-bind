@@ -58,6 +58,7 @@
     - "{{ bind_dir }}/dynamic"
     - "{{ bind_dir }}/data"
     - "{{ bind_zone_dir }}"
+    - "{{ bind_log_dir }}"
   tags: bind
 
 - name: Ensure Directory for Cached Secondary Zones exists
