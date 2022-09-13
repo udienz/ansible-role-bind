@@ -89,7 +89,7 @@
     owner: root
     group: "{{ bind_group }}"
   become: yes
-  when: bind_dns_keys is defined and bind_dns_keys|length > 0
+  when: bind_dns_keys is defined and bind_dns_keys | length > 0
   notify: reload bind
   tags: bind
 
