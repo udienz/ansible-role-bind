@@ -90,7 +90,7 @@
     group: "{{ bind_group }}"
   become: yes
   when: bind_dns_keys is defined and bind_dns_keys | length > 0
-  notify: reload bind
+  notify: Reload bind
   tags: bind
 
 - name: Configure zones
@@ -107,7 +107,7 @@
     setype: named_conf_t
     validate: 'named-checkconf %s'
   become: yes
-  notify: reload bind
+  notify: Reload bind
   tags: bind
 
 - name: Start BIND service
