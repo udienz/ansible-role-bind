@@ -226,13 +226,7 @@ zone "{{ (network | ipaddr('revdns'))[-(9+(network|regex_replace('^.*/','')|int)
 {% endfor %}
 {% endif %}
 
-{% if ansible_os_family == "Debian" %}
-zone "." {
-        type hint;
-        file "/etc/bind/db.root";
-};
-
-{% elif ansible_os_family == "RedHat" %}
+{% if ansible_os_family == "RedHat" %}
 zone "." IN {
         type hint;
         file "{{ bind_dir }}/named.ca";
