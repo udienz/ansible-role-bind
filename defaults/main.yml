@@ -83,4 +83,4 @@ bind_dns64_clients:
 bind_python_version: "{{ bind_default_python_version }}"
 
 # Log file
-bind_log_dir : "/var/log/{{ bind_service }}"
+bind_log_dir: "/var/log/{{ bind_service }}"
