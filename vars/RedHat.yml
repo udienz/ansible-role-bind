@@ -32,4 +32,4 @@ bind_session_keyfile: "/run/named/session.key"
 
 # Custom location for zone files
 bind_zone_dir: "{{ bind_dir }}/zones"
-bind_secondary_dir: "{{ bind_dir }}/slave"
+bind_secondary_dir: "{{ bind_dir }}/slaves"
