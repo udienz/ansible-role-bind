@@ -1,3 +1,4 @@
 ---
 skip_list:
- - experimental
+  - jinja[invalid]
+  - experimental

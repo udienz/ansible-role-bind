@@ -5,7 +5,7 @@
   tags: bind
 
 - name: Read forward zone hashes
-  ansible.builtin.shell: 'grep -s "^; Hash:" {{ bind_zone_dir }}/{{ item.name }} || true'
+  ansible.builtin.shell: grep -s "^; Hash:" {{ bind_zone_dir }}/{{ item.name }} || true
   changed_when: false
   check_mode: false
   register: forward_hashes_temp
@@ -27,9 +27,9 @@
   tags: bind
 
 - name: Read reverse ipv4 zone hashes
-  ansible.builtin.shell: "grep -s \"^; Hash:\" {{ bind_zone_dir }}/{{ ('.'.join(item.1.replace(item.1+'.','').split('.')[::-1])) }}.in-addr.arpa || true"
   changed_when: false
   check_mode: false
+  ansible.builtin.shell: "grep -s \"^; Hash:\" {{ bind_zone_dir }}/{{ ('.'.join(item.1.replace(item.1 + '.', '').split('.')[:: -1])) }}.in-addr.arpa || true"
   register: reverse_hashes_temp
   with_subelements:
     - "{{ bind_zones }}"
@@ -43,7 +43,7 @@
 
 - name: Create dict of reverse hashes
   ansible.builtin.set_fact:
-    reverse_hashes: "{{ reverse_hashes | default([]) + [ { 'hash': item.0.stdout | default(), 'network': item.1 } ] }}"
+    reverse_hashes: "{{ reverse_hashes | default([]) + [{'hash':item.0.stdout |default(), 'network':item.1}] }}"
   with_subelements:
     - "{{ reverse_hashes_temp.results }}"
     - item
@@ -53,7 +53,7 @@
   tags: bind
 
 - name: Read reverse ipv6 zone hashes
-  ansible.builtin.shell: "grep -s \"^; Hash:\" {{ bind_zone_dir }}/{{ (item.1 | ipaddr('revdns'))[-(9+(item.1|regex_replace('^.*/','')|int)//2):-1] }} || true"
+  ansible.builtin.shell: "grep -s \"^; Hash:\" {{ bind_zone_dir }}/{{ (item.1 | ipaddr('revdns'))[-(9 + (item.1 |regex_replace('^.*/', '')|int)//2):-1] }} || true"
   changed_when: false
   check_mode: false
   register: reverse_hashes_ipv6_temp
@@ -69,7 +69,7 @@
 
 - name: Create dict of reverse ipv6 hashes
   ansible.builtin.set_fact:
-    reverse_hashes_ipv6: "{{ reverse_hashes_ipv6 | default([]) + [ { 'hash': item.0.stdout | default(), 'network': item.1 } ] }}"
+    reverse_hashes_ipv6: "{{ reverse_hashes_ipv6 | default([]) + [{'hash':item.0.stdout |default(), 'network':item.1}] }}"
   with_subelements:
     - "{{ reverse_hashes_ipv6_temp.results }}"
     - item
@@ -86,8 +86,8 @@
     group: "{{ bind_group }}"
     mode: "{{ bind_zone_file_mode }}"
     setype: named_zone_t
-    validate: 'named-checkzone -d {{ item.name }} %s'
-  become: yes
+    validate: named-checkzone -d {{ item.name }} %s
+  become: true
   with_items:
     - "{{ bind_zones }}"
   loop_control:
@@ -103,13 +103,13 @@
 - name: Create reverse lookup zone file
   ansible.builtin.template:
     src: reverse_zone.j2
-    dest: "{{ bind_zone_dir }}/{{ ('.'.join(item.1.replace(item.1+'.','').split('.')[::-1])) }}.in-addr.arpa"
+    dest: "{{ bind_zone_dir }}/{{ ('.'.join(item.1.replace(item.1 + '.', '').split('.')[:: -1])) }}.in-addr.arpa"
     owner: "{{ bind_owner }}"
     group: "{{ bind_group }}"
     mode: "{{ bind_zone_file_mode }}"
     setype: named_zone_t
-    validate: "named-checkzone {{ ('.'.join(item.1.replace(item.1+'.','').split('.')[::-1])) }}.in-addr.arpa %s"
-  become: yes
+    validate: named-checkzone {{ ('.'.join(item.1.replace(item.1+'.','').split('.')[::-1])) }}.in-addr.arpa %s
+  become: true
   with_subelements:
     - "{{ bind_zones }}"
     - networks
@@ -128,13 +128,13 @@
 - name: Create reverse IPv6 lookup zone file
   ansible.builtin.template:
     src: reverse_zone_ipv6.j2
-    dest: "{{ bind_zone_dir }}/{{ ( item.1 | ipaddr('revdns'))[-(9+(item.1 | regex_replace('^.*/','') | int)//2):-1] }}"
+    dest: "{{ bind_zone_dir }}/{{ (item.1 | ipaddr('revdns'))[-(9 + (item.1 |regex_replace('^.*/', '')|int)//2):-1] }}"
     owner: "{{ bind_owner }}"
     group: "{{ bind_group }}"
     mode: "{{ bind_zone_file_mode }}"
     setype: named_zone_t
-    validate: "named-checkzone {{ (item.1 | ipaddr('revdns'))[-(9+(item.1 | regex_replace('^.*/','') | int)//2):] }} %s"
-  become: yes
+    validate: named-checkzone {{ (item.1 | ipaddr('revdns'))[-(9+(item.1 | regex_replace('^.*/','') | int)//2):] }} %s
+  become: true
   with_subelements:
     - "{{ bind_zones }}"
     - ipv6_networks
