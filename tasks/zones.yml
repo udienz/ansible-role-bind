@@ -5,7 +5,7 @@
   tags: bind
 
 - name: Read forward zone hashes
-  ansible.builtin.shell: 'grep -s "^; Hash:" {{ bind_zone_dir }}/{{ item.name }} || true'
+  ansible.builtin.shell: grep -s "^; Hash:" {{ bind_zone_dir }}/{{ item.name }} || true
   changed_when: false
   check_mode: false
   register: forward_hashes_temp
@@ -18,7 +18,7 @@
 
 - name: Create dict of forward hashes
   ansible.builtin.set_fact:
-    forward_hashes: "{{ forward_hashes | default([]) + [{'hash':item.stdout |default(), 'name':item.item.name}] }}"
+    forward_hashes: "{{ forward_hashes | default([]) + [{'hash': item.stdout | default(), 'name': item.item.name}] }}"
   with_items:
     - "{{ forward_hashes_temp.results }}"
   run_once: true
@@ -27,9 +27,9 @@
   tags: bind
 
 - name: Read reverse ipv4 zone hashes
-  ansible.builtin.shell: "grep -s \"^; Hash:\" {{ bind_zone_dir }}/{{ ('.'.join(item.1.replace(item.1 + '.', '').split('.')[:: -1])) }}.in-addr.arpa || true"
   changed_when: false
   check_mode: false
+  ansible.builtin.shell: "grep -s \"^; Hash:\" {{ bind_zone_dir }}/{{ ('.'.join(item.1.replace(item.1 + '.', '').split('.')[:: -1])) }}.in-addr.arpa || true"
   register: reverse_hashes_temp
   with_subelements:
     - "{{ bind_zones }}"
@@ -53,7 +53,7 @@
   tags: bind
 
 - name: Read reverse ipv6 zone hashes
-  ansible.builtin.shell: "grep -s "^; Hash:" {{ bind_zone_dir }}/{{ (item.1 | ipaddr('revdns'))[-(9 + (item.1 |regex_replace('^.*/', '')|int)//2):-1] }} || true"
+  ansible.builtin.shell: "grep -s \"^; Hash:\" {{ bind_zone_dir }}/{{ (item.1 | ipaddr('revdns'))[-(9 + (item.1 |regex_replace('^.*/', '')|int)//2):-1] }} || true"
   changed_when: false
   check_mode: false
   register: reverse_hashes_ipv6_temp
@@ -86,8 +86,8 @@
     group: "{{ bind_group }}"
     mode: "{{ bind_zone_file_mode }}"
     setype: named_zone_t
-    validate: 'named-checkzone -d {{ item.name }} %s'
-  become: yes
+    validate: named-checkzone -d {{ item.name }} %s
+  become: true
   with_items:
     - "{{ bind_zones }}"
   loop_control:
@@ -108,8 +108,8 @@
     group: "{{ bind_group }}"
     mode: "{{ bind_zone_file_mode }}"
     setype: named_zone_t
-    validate: "named-checkzone {{ ('.'.join(item.1.replace(item.1+'.','').split('.')[::-1])) }}.in-addr.arpa %s"
-  become: yes
+    validate: named-checkzone {{ ('.'.join(item.1.replace(item.1+'.','').split('.')[::-1])) }}.in-addr.arpa %s
+  become: true
   with_subelements:
     - "{{ bind_zones }}"
     - networks
@@ -133,8 +133,8 @@
     group: "{{ bind_group }}"
     mode: "{{ bind_zone_file_mode }}"
     setype: named_zone_t
-    validate: "named-checkzone {{ (item.1 | ipaddr('revdns'))[-(9+(item.1 | regex_replace('^.*/','') | int)//2):] }} %s"
-  become: yes
+    validate: named-checkzone {{ (item.1 | ipaddr('revdns'))[-(9+(item.1 | regex_replace('^.*/','') | int)//2):] }} %s
+  become: true
   with_subelements:
     - "{{ bind_zones }}"
     - ipv6_networks
