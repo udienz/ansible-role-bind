@@ -39,7 +39,7 @@ options {
   rrset-order { order {{ bind_rrset_order }}; };
 
 {%+ if ansible_distribution == "Ubuntu" and ansible_distribution_version >= "22.04" -%}
-//dnssec-enable {{ bind_dnssec_enable }};
+{% if bind_dnssec_enable %} dnssec-enable {{ bind_dnssec_enable }};{% endif %}
 {% else %}
   dnssec-enable {{ bind_dnssec_enable }};
 {% endif %}
