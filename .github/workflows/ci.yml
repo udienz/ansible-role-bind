@@ -14,14 +14,9 @@ jobs:
     strategy:
       matrix:
         distro:
-          - centos7
           - centos8
-          - debian8
-          - debian9
           - debian10
-          - ubuntu1604
-          - ubuntu1804
-          - ubuntu2004
+          - ubuntu2204
 
     steps:
       - name: Check out the codebase.
@@ -34,6 +29,9 @@ jobs:
 
       - name: Install test dependencies.
         run: pip3 install ansible molecule molecule-docker yamllint ansible-lint docker netaddr dnspython
+
+      - name: Install galaxy role
+        run: ansible-galaxy install udienz.bind
 
       - name: Run Molecule Primary/Secondary/Forwarder tests
         run: molecule test
