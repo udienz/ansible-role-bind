@@ -43,8 +43,6 @@ options {
 {% else %}
   dnssec-enable {{ bind_dnssec_enable }};
 {% endif %}
-
-  dnssec-enable {{ bind_dnssec_enable }};
   dnssec-validation {{ bind_dnssec_validation }};
 
   /* Path to ISC DLV key */
