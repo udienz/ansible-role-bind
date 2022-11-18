@@ -28,3 +28,6 @@ bind_zone_time_to_retry: "2H"
 bind_zone_time_to_expire: "2W"
 bind_statistics_host: "{{ ansible_default_ipv4.address }}"
 bind_key_mapping: {}
+bind_python_version: "{{ bind_default_python_version }}"
+bind_log_dir: "/var/log/{{ bind_service }}"
+bind_log: "{{ bind_log_dir }}/{{ bind_service }}"
