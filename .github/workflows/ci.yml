@@ -5,6 +5,7 @@ name: CI
   push:
     branches:
       - master
+runs-on: self-hosted
 
 jobs:
 
@@ -15,8 +16,11 @@ jobs:
       matrix:
         distro:
           - centos8
+          - centos7
           - debian10
+          - debian9
           - ubuntu2204
+          - ubuntu2004
 
     steps:
       - name: Check out the codebase.
@@ -40,6 +44,17 @@ jobs:
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DISTRO: ${{ matrix.distro }}
 
+      - name: Copy artifact
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Artifact for ${{ matrix.distro }}
+          path: |
+            /etc/named.conf
+            /etc/named/
+            /etc/rndc.key
+            /var/named/
+        
       - name: Run Molecule Shared Inventory tests
         run: molecule test --scenario-name shared_inventory
         env:
