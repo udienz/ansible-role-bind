@@ -93,7 +93,7 @@
   tags: bind
 
 - name: Configure zones
-  include_tasks: zones.yml
+  ansible.builtin.include_tasks: zones.yml
   tags: bind
 
 - name: Main BIND config file

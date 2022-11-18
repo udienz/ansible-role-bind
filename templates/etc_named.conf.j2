@@ -38,9 +38,9 @@ options {
 
   rrset-order { order {{ bind_rrset_order }}; };
 
-{%+ if ansible_distribution == "Ubuntu" and ansible_distribution_version >= "22.04" -%}
+{%+ if ansible_distribution == "Ubuntu" and ansible_distribution_version >= 22.04 -%}
   {% if bind_dnssec_enable %} dnssec-enable {{ bind_dnssec_enable }};{% endif %}
-{% elif ansible_distribution == "Debian" and ansible_distribution_version >= "10" -%}
+{% elif ansible_distribution == "Debian" and ansible_distribution_version >= 10 -%}
   {% if bind_dnssec_enable %} dnssec-enable {{ bind_dnssec_enable }};{% endif %}
 {% else %}
   dnssec-enable {{ bind_dnssec_enable }};

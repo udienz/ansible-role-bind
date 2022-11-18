@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: start the tasks
+      ansible.builtin.include_tasks: tasks/main.yml
