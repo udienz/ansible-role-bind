@@ -21,6 +21,11 @@ jobs:
           - debian9
           - ubuntu2204
           - ubuntu2004
+        configfile:
+          - /etc/named.conf
+          - /etc/named/
+          - /etc/rndc.key
+          - /var/named/
 
     steps:
       - name: Check out the codebase.
@@ -37,24 +42,32 @@ jobs:
       - name: Install galaxy role
         run: ansible-galaxy install udienz.bind
 
-      - name: Run Molecule Primary/Secondary/Forwarder tests
-        run: molecule test
+      - name: Run Molecule Primary/Secondary/Forwarder converge
+        run: molecule converge
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DISTRO: ${{ matrix.distro }}
 
       - name: Copy artifact
+        run: |
+          mkdir ${{ github.workspace }}
+          docker cp ${{ matrix.distro }}:${ matrix.configfile}} ${{ github.workspace }}/${{ matrix.distro }}/{{ matrix.configfile }}
+
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: Artifact for ${{ matrix.distro }}
           path: |
-            /etc/named.conf
-            /etc/named/
-            /etc/rndc.key
-            /var/named/
-        
+            ${{ github.workspace }}/${{ matrix.distro }}/${{ matrix.configfile }}
+
+      - name: Run Molecule Primary/Secondary/Forwarder destroy
+        run: molecule destroy
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          MOLECULE_DISTRO: ${{ matrix.distro }}
+
       - name: Run Molecule Shared Inventory tests
         run: molecule test --scenario-name shared_inventory
         env:
