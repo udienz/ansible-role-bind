@@ -4,8 +4,8 @@ on:
   pull_request:
   push:
     branches:
-   - master
- env:
+     - master
+env:
    PY_COLORS: '1'
    ANSIBLE_FORCE_COLOR: '1'
 
