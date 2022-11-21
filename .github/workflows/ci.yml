@@ -10,7 +10,6 @@ jobs:
 
   test:
     name: Molecule
-    runs-on: ["self-hosted"]
     strategy:
       matrix:
         distro:
