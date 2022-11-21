@@ -4,16 +4,15 @@ on:
   pull_request:
   push:
     branches:
-     - master
+      - master
 env:
-   PY_COLORS: '1'
-   ANSIBLE_FORCE_COLOR: '1'
+  PY_COLORS: '1'
+  ANSIBLE_FORCE_COLOR: '1'
 
 jobs:
-
   test:
     name: Molecule
-    runs-on: [ "vm-ssd"] 
+    runs-on: ["vm-ssd"]
     strategy:
       matrix:
         distro:
