@@ -45,22 +45,6 @@ jobs:
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DISTRO: ${{ matrix.distro }}
 
-      - name: Copy artifact
-        run: |
-          mkdir ${{ github.workspace }}/${{ matrix.distro }}
-          docker cp ${{ matrix.distro }}:/etc/named.conf ${{ github.workspace }}/${{ matrix.distro }}/etc/named.conf
-          docker cp ${{ matrix.distro }}:/etc/named/ ${{ github.workspace }}/${{ matrix.distro }}/etc/named/
-          docker cp ${{ matrix.distro }}:/etc/var/named/ ${{ github.workspace }}/${{ matrix.distro }}/var/named/
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: Artifact for ${{ matrix.distro }}
-          path: |
-           ${{ github.workspace }}/${{ matrix.distro }}/var/named/
-           ${{ github.workspace }}/${{ matrix.distro }}/etc/named/
-           ${{ github.workspace }}/${{ matrix.distro }}/etc/named.conf
-
       - name: Run Molecule Primary/Secondary/Forwarder destroy
         run: molecule destroy
         env:
