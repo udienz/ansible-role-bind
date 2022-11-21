@@ -10,6 +10,7 @@ jobs:
 
   test:
     name: Molecule
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         distro:
