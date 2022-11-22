@@ -10,7 +10,7 @@ driver:
 lint: |
   set -e
   yamllint .
-  ansible-lint -x 106 .
+  ansible-lint -c .ansible-lint.yml .
 
 platforms:
   # Set name and hostname
