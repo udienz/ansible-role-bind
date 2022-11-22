@@ -49,8 +49,3 @@ jobs:
         run: molecule destroy
         env:
           MOLECULE_DISTRO: ${{ matrix.distro }}
-
-      - name: Run Molecule Shared Inventory tests
-        run: molecule test --scenario-name shared_inventory
-        env:
-          MOLECULE_DISTRO: ${{ matrix.distro }}
