@@ -12,7 +12,7 @@ env:
 jobs:
   test:
     name: Molecule
-    runs-on: ["vm-ssd"]
+    runs-on: ["ubuntu-latest"]
     strategy:
       matrix:
         distro:
