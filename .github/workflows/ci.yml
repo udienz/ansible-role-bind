@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+      - main
 env:
   PY_COLORS: '1'
   ANSIBLE_FORCE_COLOR: '1'
@@ -12,14 +13,14 @@ env:
 jobs:
   test:
     name: Molecule
-    runs-on: ["vm-ssd"]
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         distro:
           - centos8
           - centos7
           - debian10
-          - debian9
+          - debian11
           - ubuntu2204
           - ubuntu2004
 
