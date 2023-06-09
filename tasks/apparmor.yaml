@@ -1,0 +1,17 @@
+---
+- name: Check apparmor directory
+  ansible.builtin.stat:
+    path: "/etc/apparmor.d/"
+  register: apparmor_dir
+
+- name: Create apparmor profile
+  become: true
+  tags: bind
+  when: apparmor_dir.stat.exist
+  ansible.builtin.template:
+    src: apparmor.j2
+    dest: "/etc/apparmor.d/local/usr.sbin.named"
+    owner: root
+    group: root
+    mode: '0644'
+    setype: named_conf_t
